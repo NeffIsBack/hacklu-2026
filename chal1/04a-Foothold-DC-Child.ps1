@@ -111,3 +111,11 @@ Write-Host "         LSA-/Policy-Aenderungen greifen erst nach REBOOT." -Foregro
 
 if ($AutoRestart) { Write-Host "[*] Starte neu ..." -ForegroundColor Yellow; Restart-Computer -Force }
 else { Write-Host "[!] Bitte neu starten: Restart-Computer -Force" -ForegroundColor Yellow }
+
+# --- 3d) Fix permissions for RID brute ---
+$inf="$env:TEMP\s.inf"; $sdb="$env:TEMP\s.sdb"
+secedit /export /cfg $inf /areas SECURITYPOLICY /quiet
+(Get-Content $inf) -replace 'LSAAnonymousNameLookup\s*=\s*\d','LSAAnonymousNameLookup = 1' | Set-Content $inf -Encoding Unicode
+secedit /configure /db $sdb /cfg $inf /areas SECURITYPOLICY
+secedit /export /cfg $inf /areas SECURITYPOLICY /quiet; Select-String LSAAnonymousNameLookup $inf
+Restart-Computer -Force
