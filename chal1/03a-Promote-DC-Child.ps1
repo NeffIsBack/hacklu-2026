@@ -15,12 +15,12 @@ $NewDomainName       = 'old'                 # -> old.velocity.hacklu
 $ParentDomain        = 'velocity.hacklu'
 $NewNetbios          = 'OLD'
 $ParentNetbios       = 'VELOCITY'
-$ParentDcIp          = '192.168.84.10'
+$ParentDcIp          = '192.168.108.10'
 
 # LAB-ONLY, hartkodiert:
-$LocalAdminPassword  = 'Velocity#OldAdmin2026'
-$DsrmPassword        = 'Velocity#OldDsrm2026'
-$ParentAdminPassword = 'Velocity#Admin2026'   # = Domain-Admin des Parent (aus 02a)!
+$LocalAdminPassword  = 'qcSiecDUATD63Kxm'
+$DsrmPassword        = 'qcSiecDUATD63Kxm'
+$ParentAdminPassword = 'C8J33i45kt4HXHMQ'   # = Domain-Admin des Parent (aus 02a)!
 # ==================================================
 
 $ErrorActionPreference = 'Stop'

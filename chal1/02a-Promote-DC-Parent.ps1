@@ -14,8 +14,8 @@ $DomainNetbios      = 'VELOCITY'
 
 # LAB-ONLY, hartkodiert. Komplexitaet noetig (Gross/Klein/Ziffer/Sonderzeichen).
 # LocalAdminPassword wird bei der Promotion zum DOMAIN-ADMIN-Passwort -> merken!
-$LocalAdminPassword = 'Velocity#Admin2026'
-$DsrmPassword       = 'Velocity#Dsrm2026'
+$LocalAdminPassword = 'C8J33i45kt4HXHMQ'
+$DsrmPassword       = 'C8J33i45kt4HXHMQ'
 # ==================================================
 
 $ErrorActionPreference = 'Stop'
