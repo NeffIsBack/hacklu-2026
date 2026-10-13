@@ -35,12 +35,6 @@ $gmsaDn = (Get-ADServiceAccount -Identity $GmsaName).DistinguishedName
 Set-ADObject -Identity $gmsaDn -Replace @{ 'msDS-GroupMSAMembership' = $bytes }
 Write-Host "[*] '$GmsaName' ist jetzt fuer '$GroupSam' ($ChildDomain) lesbar." -ForegroundColor Green
 
-# --- Vorsorgliche Bereinigung alter, im Parent falsch platzierter Artefakte ---
-$oldGrp = Get-ADGroup -Server $ParentDomain -Filter "SamAccountName -eq '$GroupSam'" -ErrorAction SilentlyContinue
-if ($oldGrp) { Remove-ADGroup -Identity $oldGrp -Confirm:$false; Write-Host "[*] Alte Parent-Gruppe entfernt." -ForegroundColor Yellow }
-$oldUsr = Get-ADUser -Server $ParentDomain -Filter "SamAccountName -eq 'svc_granite_sync'" -ErrorAction SilentlyContinue
-if ($oldUsr) { Remove-ADUser -Identity $oldUsr -Confirm:$false; Write-Host "[*] Alter Parent-User entfernt." -ForegroundColor Yellow }
-
 # --- Verifikation (rohe SD lesen -> keine Namensaufloesung noetig) ---
 Write-Host "`n[verify] Erlaubte SID(s) in msDS-GroupMSAMembership:" -ForegroundColor Cyan
 try {
