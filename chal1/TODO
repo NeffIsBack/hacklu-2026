@@ -1,0 +1,12 @@
+## Config
+* Export NTDS.dit
+* Place into SMB share and add other stuff
+* Rotate krtbtgt hash 2x and rest passwords 1x
+* Flag platzieren
+
+## Hardening
+* maq
+* Signing + ChannelBinding
+
+## Bug Fixes
+* Timezone Zeit korrekt einstellen auf beiden DCs
