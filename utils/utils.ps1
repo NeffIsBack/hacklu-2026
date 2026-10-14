@@ -5,7 +5,15 @@ $Lang[0].InputMethodTips.Add("0409:00020409") # 0409:00020409 = US-International
 Set-WinUserLanguageList -LanguageList $Lang -Force
 
 # Disable password expiration for all users
-Get-ADUser -Filter * | Set-ADUser -PasswordNeverExpires:$True
+Import-Module ActiveDirectory -ErrorAction Stop
+foreach ($user in Get-ADUser -Filter * -ErrorAction Stop) {
+    try {
+        Set-ADUser -Identity $user -PasswordNeverExpires $true -ErrorAction Stop
+    }
+    catch {
+        Write-Warning "Failed for $($user.SamAccountName): $($_.Exception.Message)"
+    }
+}
 
 # Echo Flag into Desktop/flag.txt
 $text = Read-Host "Enter Flag"
