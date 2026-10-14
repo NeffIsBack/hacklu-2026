@@ -25,7 +25,7 @@ $Domain              = 'old.velocity.hacklu'
 # Administrator wird rotiert (schliesst den PtH-Shortcut aus dem Export),
 # bekommt aber ein BEKANNTES neues Passwort, damit du weiter Zugriff hast.
 $RotateAdministrator = $true
-$NewAdminPassword    = 'KPLewbdd5piHs3ZD'   # <-- ab jetzt das Live-Admin-PW!
+$NewAdminPassword    = 'KPLewbdd5piHs3YD'   # <-- ab jetzt das Live-Admin-PW!
 
 $Protect = @('krbtgt','svc_test','svc_granite_sync','svc_backup_gmsa','Guest')
 # ==================================================
