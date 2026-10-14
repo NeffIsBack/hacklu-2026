@@ -1,5 +1,6 @@
 ## Attack chain idea
 
+### Step-by-step
 1. Unauthenticated RID-Bruteforce um Nutzernamen zu erfahren
 2. Username=Passwort sprayen um Niedrig priv. Account (svc_test) zu bekommen
 3. Mit svc_test Kerberoasten um Hash von svc_backup zu bekommen
@@ -9,6 +10,8 @@
 7. Dort liegt ein alter NTDS.dit export der Child Domain
 8. Die enthaltenen Hashes sind alle wertlos (Passwörter rotiert). Nur der krbtgt Hash ist valid
 9. Mit krbtgt Hash sid-History Attack ausführen um Parent Domain zu ownen
+
+### Commands
 
 
 
