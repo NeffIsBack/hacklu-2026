@@ -9,3 +9,18 @@
 7. Dort liegt ein alter NTDS.dit export der Child Domain
 8. Die enthaltenen Hashes sind alle wertlos (Passwörter rotiert). Nur der krbtgt Hash ist valid
 9. Mit krbtgt Hash sid-History Attack ausführen um Parent Domain zu ownen
+
+
+
+
+## Manual configuration steps
+### NTDS.dit export
+1. Extract NTDS.dit and SYSTEM hive: `ntdsutil "activate instance ntds" "ifm" "create full C:\Windows\Temp\NTDS" quit quit`
+2. Download the files from Child:
+   1. `poetry run nxc smb 192.168.108.20 -u Administrator -p qcSiecDUATD63Kxm --get-file '\Windows\Temp\NTDS\Active Directory\ntds.dit' NTDS.dit`
+   2. `poetry run nxc smb 192.168.108.20 -u Administrator -p qcSiecDUATD63Kxm --get-file '\Windows\Temp\NTDS\registry\SYSTEM' SYSTEM`
+3. Remove NTDS extraction: `Remove-Item -Recurse -Force C:\Windows\Temp\NTDS`
+4. Upload files to Parent:
+   1. `poetry run nxc smb 192.168.108.10 -u Administrator -p C8J33i45kt4HXHMQ --share Backup$ --put-file NTDS.dit '\Export\NTDS.dit'`
+   2. `poetry run nxc smb 192.168.108.10 -u Administrator -p C8J33i45kt4HXHMQ --share Backup$ --put-file SYSTEM '\Export\SYSTEM'`
+

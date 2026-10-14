@@ -2,7 +2,7 @@
 * Export NTDS.dit
 * Place into SMB share and add other stuff
 * Rotate krtbtgt hash 2x and rest passwords 1x
-* Flag platzieren
+* Flag platzieren (1. hälfte in Child, 2. hälfte in Parent)
 
 ## Hardening
 * maq
