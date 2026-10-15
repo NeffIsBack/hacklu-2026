@@ -1,9 +1,0 @@
-## Config
-* Flag platzieren (1. hälfte in Child, 2. hälfte in Parent)
-
-## Hardening
-* maq
-* Signing + ChannelBinding
-
-## Bug Fixes
-* Timezone Zeit korrekt einstellen auf beiden DCs
