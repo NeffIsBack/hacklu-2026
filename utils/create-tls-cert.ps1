@@ -3,7 +3,7 @@
 
 # --- Custom variables ---
 $hostFQDN = [System.Net.Dns]::GetHostByName($env:computerName).HostName
-$certPass = "62iGvDDfE5jQ3rCb"
+$certPass = Read-Host 'Enter Cert Password'
 $certPath = "C:\Certs"
 $certCN = "$hostFQDN"
 $validYears = 5
