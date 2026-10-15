@@ -2,7 +2,6 @@
 # Generates a self-signed certificate for the Domain Controller
 
 # --- Custom variables ---
-$domainName = "hack.lu"
 $hostFQDN = [System.Net.Dns]::GetHostByName($env:computerName).HostName
 $certPass = "62iGvDDfE5jQ3rCb"
 $certPath = "C:\Certs"
