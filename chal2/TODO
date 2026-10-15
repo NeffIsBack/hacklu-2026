@@ -1,5 +1,5 @@
 ## TODOs
-- TLS-Cert configuren
-- Härten
+- ADCS Cert fixen & Attack path fertig testen
+- GPO erstellen zum WSUS hinten (für wsuks discovery)
 - Time fixen
 - PS-History löschen
