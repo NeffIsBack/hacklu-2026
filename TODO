@@ -1,9 +1,14 @@
-## Unsere TODOS:
+## Post-Build TODOs
+* Hardening & TLS-Cert etc.
+* Flags platzieren
+
+## Unsere TODOs:
 * Fluff anpassen damit nicht nach KI klingt
 * Neu Bauen
 * Live Umgebung testen
 
-## Bug Fixes
+
+## Mit hlt Bug Fixes
 * Timezone Zeit korrekt einstellen auf DCs
 * IPs setzen
 
