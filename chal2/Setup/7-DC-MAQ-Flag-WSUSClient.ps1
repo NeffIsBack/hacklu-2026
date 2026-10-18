@@ -12,7 +12,7 @@
 
 # ==== Konfiguration ====
 $WsusUrl   = 'https://wsus.agile-corp.hacklu:8531'
-$ScanEvery = 5   # Minuten
+$ScanEvery = 1   # Minuten (1 = Minimum fuer Task-Repetition)
 # =======================
 
 $ErrorActionPreference = 'Stop'
@@ -33,14 +33,30 @@ Set-ItemProperty -Path $au -Name 'NoAutoUpdate'   -Value 0 -Type DWord
 Set-ItemProperty -Path $au -Name 'AUOptions'      -Value 4 -Type DWord   # auto download + install
 Write-Host "[+] WUServer = $WsusUrl (HTTPS-fix)"
 
-# --- 5-min-Scan-Task -------------------------------------------------
-$action  = New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\UsoClient.exe" -Argument 'StartScan'
+# --- PSWindowsUpdate installieren (Build-Zeit, braucht Internet) -----
+# UsoClient StartScan ist auf 2022 unzuverlaessig. PSWindowsUpdate mit
+# Install-WindowsUpdate -AcceptAll triggert zuverlaessig Scan+Install
+# vom konfigurierten WSUS. Modul wird in den Snapshot gebacken.
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
+Write-Host "[+] PSWindowsUpdate installiert."
+
+# --- Scan-Task: erst DNS flushen, dann via WSUS installieren ---------
+# flushdns ist noetig, sonst bleibt der alte 'wsus'-Record im Resolver-
+# Cache des DC und der umgebogene Eintrag des Angreifers greift nicht.
+# Zwei Aktionen laufen sequentiell in Reihenfolge.
+$flush  = New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\ipconfig.exe" -Argument '/flushdns'
+$update = New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" `
+             -Argument '-NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate; Install-WindowsUpdate -AcceptAll -IgnoreReboot | Out-Null"'
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
              -RepetitionInterval (New-TimeSpan -Minutes $ScanEvery) `
              -RepetitionDuration (New-TimeSpan -Days 3650)
-Register-ScheduledTask -TaskName 'WSUS-FastScan' -Action $action -Trigger $trigger `
-    -User 'SYSTEM' -RunLevel Highest -Force | Out-Null
-Write-Host "[+] Scan-Task 'WSUS-FastScan' alle $ScanEvery min."
+$settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
+Register-ScheduledTask -TaskName 'WSUS-FastScan' -Action $flush,$update -Trigger $trigger `
+    -Settings $settings -User 'SYSTEM' -RunLevel Highest -Force | Out-Null
+Write-Host "[+] Scan-Task 'WSUS-FastScan' alle $ScanEvery min (flushdns + Install-WindowsUpdate)."
 
-Write-Host "`n[i] Scan-Trigger auf 2022 beim Durchspielen verifizieren (UsoClient StartScan)."
-Write-Host "    Fallbacks: COM (Microsoft.Update.AutoUpdate).DetectNow() oder wuauclt /detectnow."
+Write-Host "`n[i] Braucht Internet zur Build-Zeit (PSGallery). Im isolierten Runtime laeuft der Task offline."
+Write-Host "    Beim Durchspielen pruefen, dass der SYSTEM-Task den malicious Update auch installiert."
