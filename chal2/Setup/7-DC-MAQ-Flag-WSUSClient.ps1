@@ -13,6 +13,7 @@
 # ==== Konfiguration ====
 $WsusUrl   = 'https://wsus.agile-corp.hacklu:8531'
 $ScanEvery = 1   # Minuten (1 = Minimum fuer Task-Repetition)
+$WsusGpo    = 'Windows-Update-Policy'
 # =======================
 
 $ErrorActionPreference = 'Stop'
@@ -58,5 +59,27 @@ Register-ScheduledTask -TaskName 'WSUS-FastScan' -Action $flush,$update -Trigger
     -Settings $settings -User 'SYSTEM' -RunLevel Highest -Force | Out-Null
 Write-Host "[+] Scan-Task 'WSUS-FastScan' alle $ScanEvery min (flushdns + Install-WindowsUpdate)."
 
-Write-Host "`n[i] Braucht Internet zur Build-Zeit (PSGallery). Im isolierten Runtime laeuft der Task offline."
-Write-Host "    Beim Durchspielen pruefen, dass der SYSTEM-Task den malicious Update auch installiert."
+# --- GPO fuer WSUS-Client (schreibt registry.pol nach SYSVOL) --------
+# wsuks --discover liest SYSVOL-GPOs und findet WUServer darin.
+# Damit ist der WSUS-Endpunkt fuer den Angreifer nach dem initialen
+# Access (svc_deploy-Creds) sauber auffindbar ohne Ratespiel.
+if (-not (Get-GPO -Name $WsusGpo -ErrorAction SilentlyContinue)) {
+    New-GPO -Name $WsusGpo -Comment 'Corporate Windows Update configuration' | Out-Null
+    Write-Host "[+] GPO '$WsusGpo' angelegt."
+} else { Write-Host "[=] GPO '$WsusGpo' existiert bereits." }
+ 
+$wuKey = 'HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate'
+$auKey = "$wuKey\AU"
+Set-GPRegistryValue -Name $WsusGpo -Key $wuKey -ValueName 'WUServer'       -Type String -Value $WsusUrl | Out-Null
+Set-GPRegistryValue -Name $WsusGpo -Key $wuKey -ValueName 'WUStatusServer' -Type String -Value $WsusUrl | Out-Null
+Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'UseWUServer'    -Type DWord  -Value 1        | Out-Null
+Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'NoAutoUpdate'   -Type DWord  -Value 0        | Out-Null
+Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'AUOptions'      -Type DWord  -Value 4        | Out-Null
+ 
+# GPO an Domain-Root verknuepfen (alle Computer, inkl. DC, bekommen sie)
+$domainDN = (Get-ADDomain).DistinguishedName
+try { New-GPLink -Name $WsusGpo -Target $domainDN -LinkEnabled Yes -ErrorAction Stop | Out-Null
+      Write-Host "[+] GPO '$WsusGpo' an Domain-Root verknuepft." }
+catch { Write-Host "[=] GPO-Link vermutlich bereits vorhanden." }
+ 
+Write-Host "[+] WSUS-URL via SYSVOL/registry.pol auffindbar."
