@@ -1,7 +1,7 @@
 # ==== Konfiguration ====
 $DomainFqdn = 'agile-corp.hacklu'
 $WsusLabel  = 'wsus'
-$WsusTarget = '172.16.10.10'    # verwaist (DC-IP)
+$WsusTarget = '172.16.10.10'    # verwaist
 # =======================
 
 $ErrorActionPreference = 'Stop'

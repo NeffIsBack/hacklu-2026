@@ -1,7 +1,5 @@
 # ============================================================
 #  DC - Abschluss: SRV nach OU=Servers verschieben
-#  ERST ausfuehren, nachdem SRV der Domaene beigetreten ist (Skript 21).
-#  Damit greift die GPO 'SRV-Baseline' auf SRV.
 # ============================================================
 
 # ==== Konfiguration ====

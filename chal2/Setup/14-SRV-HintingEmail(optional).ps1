@@ -1,12 +1,5 @@
 # ============================================================
 #  SRV - Schritt 4: Admin-Mail auf dem Administrator-Desktop
-#
-#  Legt eine .eml-Datei auf C:\Users\Administrator\Desktop ab.
-#  Inhalt: Ein Admin informiert den anderen ueber den WSUS-
-#  HTTPS-Umstieg und den temporaeren Scheduled Task auf dem DC.
-#  -> Breadcrumb fuer Spieler nach dem initialen Access auf SRV.
-#
-#  NACH dem Domain-Join (Skript 21) ausfuehren.
 # ============================================================
 
 $ErrorActionPreference = 'Stop'

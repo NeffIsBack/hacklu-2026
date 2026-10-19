@@ -1,7 +1,5 @@
 # ============================================================
 #  DC - Schritt 4: ADCS Enterprise Root CA
-#
-#  NUR CA-Rolle, KEIN Web-Enrollment/NDES -> ESC8 bewusst aus.
 # ============================================================
 
 # ==== Konfiguration ====
@@ -19,4 +17,4 @@ Install-AdcsCertificationAuthority `
     -ValidityPeriod    Years -ValidityPeriodUnits 10 `
     -Force
 
-Write-Host "[+] CA '$CaCommonName' installiert (ohne Web-Enrollment)."
+Write-Host "[+] CA '$CaCommonName' installiert."

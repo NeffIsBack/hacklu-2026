@@ -1,9 +1,5 @@
 # ============================================================
 #  DC - Schritt 8: Unternehmensstruktur + 25 Mitarbeiter
-#
-#  Legt eine realistische OU-Struktur fuer Agile Corp an und
-#  bevoelkert sie mit 25 Domain Users ohne Sonderrechte.
-#
 # ============================================================
 
 # ==== Konfiguration ====
@@ -133,4 +129,3 @@ foreach ($u in $users) {
 }
 
 Write-Host "[+] $created Benutzer angelegt, $skipped bereits vorhanden."
-Write-Host "[i] Alle Benutzer: Passwort '$DefaultPassword', keine Sonderrechte."

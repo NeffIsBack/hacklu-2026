@@ -1,17 +1,5 @@
 # ============================================================
-#  SRV - Schritt 3: Deployment-Share (nur Guest-lesbar)
-#
-#  Legt einen WDS-typischen SMB-Share 'REMINST' an mit einer
-#  ImageUnattend.xml, die enthaelt:
-#    - AutoLogon fuer 'svc_deploy', Passwort base64 (wie Windows es ablegt:
-#      base64(UTF-16LE( <passwort> + "Password" )) )  <- der Creds-Fund
-#    - FirstLogonCommands, die WUServer=https://wsus.agile-corp.hacklu:8531
-#      setzen  <- dezenter Brotkrumen auf den WSUS-Schritt
-#
-#  Zugriff: NUR ueber das Guest-Konto (kein Null-Session/Anonymous).
-#  Vom Angreifer:  smbclient //10.10.10.11/REMINST -U 'Guest%'
-#
-#  NACH dem Domain-Join (Skript 21) ausfuehren.
+#  SRV - Schritt 3: Deployment-Share (Guest-lesbar)
 # ============================================================
 
 # ==== Konfiguration ====
@@ -29,7 +17,6 @@ $ErrorActionPreference = 'Stop'
 $unattendDir = Join-Path $SharePath 'WdsClientUnattend'
 New-Item -ItemType Directory -Path $unattendDir -Force | Out-Null
 
-# Passwort so kodieren, wie es in echten unattend-Dateien steht
 $b64 = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($UserPass + 'Password'))
 
 $unattend = @"

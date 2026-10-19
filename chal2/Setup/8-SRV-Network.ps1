@@ -1,6 +1,5 @@
 # ============================================================
 #  SRV - Schritt 1: Netzwerk & Rechnername
-#  Auf der SERVER-CORE-KONSOLE von SRV ausfuehren. Danach rebooten.
 # ============================================================
 
 # ==== Konfiguration ====

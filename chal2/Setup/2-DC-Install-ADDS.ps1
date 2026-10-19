@@ -1,6 +1,5 @@
 # ============================================================
-#  DC - Schritt 2: AD DS + Forest-Promotion (rebootet automatisch)
-#  Nach dem Reboot aus Schritt 1 einfuegen.
+#  DC - Schritt 2: AD DS + Forest-Promotion
 # ============================================================
 
 # ==== Konfiguration ====

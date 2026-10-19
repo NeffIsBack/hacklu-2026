@@ -1,11 +1,5 @@
 # ============================================================
 #  DC - Schritt 6: Deploy-User + OU + verwundbare GPO
-#
-#   1. Domain-User 'svc_deploy' (Creds spaeter in unattend.xml)
-#   2. OU=Servers (SRV landet hier in Skript 30)
-#   3. GPO 'SRV-Baseline', verknuepft mit OU=Servers
-#   4. MISCONFIG: svc_deploy erhaelt Edit auf die GPO -> GPO-Abuse
-#   5. GP-Refresh 5 min fuer SRV (sonst greift der Abuse erst nach 90-120 min)
 # ============================================================
 
 # ==== Konfiguration ====
@@ -58,5 +52,3 @@ Write-Host "[+] GP-Refresh fuer SRV = $RefreshMin min."
 # --- 5) MISCONFIG: Edit-Delegation an svc_deploy ---------------------
 Set-GPPermission -Name $GpoName -TargetName $UserSam -TargetType User `
     -PermissionLevel GpoEditDeleteModifySecurity -Replace | Out-Null
-Write-Host "[+] '$UserSam' => Edit auf GPO '$GpoName' (GPO-Abuse-Vektor)."
-Write-Host "`n[i] SRV wird in Skript 30 nach '$ouDN' verschoben."
