@@ -4,9 +4,9 @@
 
 # ==== Konfiguration ====
 $Name    = 'DC'
-$IP      = '192.168.108.10'
+$IP      = '192.168.109.10'
 $Prefix  = 24
-$Gateway = '192.168.108.2'
+$Gateway = '192.168.109.2'
 # =======================
 
 $ErrorActionPreference = 'Stop'
