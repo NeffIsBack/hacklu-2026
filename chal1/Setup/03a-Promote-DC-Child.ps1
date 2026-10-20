@@ -15,7 +15,7 @@ $NewDomainName       = 'old'                 # -> old.velocity.hacklu
 $ParentDomain        = 'velocity.hacklu'
 $NewNetbios          = 'OLD'
 $ParentNetbios       = 'VELOCITY'
-$ParentDcIp          = '192.168.108.10'
+$ParentDcIp          = '192.168.109.10'
 
 # LAB-ONLY, hartkodiert:
 $LocalAdminPassword  = 'qcSiecDUATD63Kxm'

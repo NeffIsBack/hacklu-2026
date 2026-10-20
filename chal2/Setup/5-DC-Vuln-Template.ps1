@@ -1,18 +1,5 @@
 # ============================================================
 #  DC - Schritt 5: Verwundbares Zertifikat-Template
-#
-#  Wir nutzen das Stock-Template 'WebServer'. Das hat von Haus aus
-#  exakt die gewuenschten Eigenschaften:
-#    - EKU NUR Server Authentication (kein Client Auth)
-#    - Enrollee supplies Subject
-#  und enrollt als echtes Built-in garantiert (kein handgebautes v2,
-#  das die CA mit "cert type not supported" ablehnt).
-#
-#  Der Misconfig: Enroll-Recht fuer 'Domain Computers' + publishen.
-#  MAQ=0 (Skript 16) erzwingt weiterhin den Umweg ueber SRV$.
-#
-#  Server-Auth-only -> kein ESC1-/PKINIT-Shortcut zur DA; das Zert
-#  taugt nur zur TLS-Impersonation von wsus.agile-corp.hacklu.
 # ============================================================
 
 # ==== Konfiguration ====
@@ -34,7 +21,7 @@ $acl.AddAccessRule((New-Object System.DirectoryServices.ActiveDirectoryAccessRul
 Set-Acl -Path "AD:\$tplDN" -AclObject $acl
 Write-Host "[+] '$Template': 'Domain Computers' => Read + Enroll."
 
-# --- Veroeffentlichen (robust via LDAP) ------------------------------
+# --- Veroeffentlichen ------------------------------
 $esBase = "CN=Enrollment Services,CN=Public Key Services,CN=Services,$configNC"
 $es = Get-ADObject -SearchBase $esBase -LDAPFilter '(objectClass=pKIEnrollmentService)' | Select-Object -First 1
 Set-ADObject -Identity $es.DistinguishedName -Add @{ certificateTemplates = $Template }

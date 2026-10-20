@@ -1,12 +1,11 @@
 # ============================================================
-#  SRV - Schritt 2: Domain-Join (rebootet automatisch)
-#  Nach dem Reboot aus Schritt 1 einfuegen. DC muss laufen.
+#  SRV - Schritt 2: Domain-Join
 # ============================================================
 
 # ==== Konfiguration ====
 $DomainFqdn = 'agile-corp.hacklu'
 $JoinUser   = 'AGILE-CORP\Administrator'
-$JoinPass   = 'c3PXFKV6x44FsM4p'     # Passwort des Domain-Administrators (= DC-Admin-Passwort)
+$JoinPass   = 'c3PXFKV6x44FsM4p'     # Passwort des Domain-Administrators
 # =======================
 
 $ErrorActionPreference = 'Stop'

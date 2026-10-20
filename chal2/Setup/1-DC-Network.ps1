@@ -1,14 +1,12 @@
 # ============================================================
 #  DC - Schritt 1: Netzwerk & Rechnername
-#  Auf der SERVER-CORE-KONSOLE von DC ausfuehren (nicht remote,
-#  da sich die IP aendert). Block komplett einfuegen, dann rebooten.
 # ============================================================
 
 # ==== Konfiguration ====
 $Name    = 'DC'
-$IP      = '192.168.108.10'
+$IP      = '192.168.109.10'
 $Prefix  = 24
-$Gateway = '192.168.108.2'
+$Gateway = '192.168.109.2'
 # =======================
 
 $ErrorActionPreference = 'Stop'
@@ -27,5 +25,4 @@ Set-DnsClientServerAddress -InterfaceIndex $nic.ifIndex -ServerAddresses $IP   #
 
 if ($env:COMPUTERNAME -ne $Name) { Rename-Computer -NewName $Name -Force }
 
-Write-Host "[+] IP $IP/$Prefix gesetzt, Name '$Name'."
 Restart-Computer -Force

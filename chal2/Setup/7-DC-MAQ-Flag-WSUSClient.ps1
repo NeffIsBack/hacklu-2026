@@ -1,18 +1,10 @@
 # ============================================================
-#  DC - Schritt 7: MAQ=0, Flag, WSUS-Client (ohne echten Server)
-#
-#   - ms-DS-MachineAccountQuota = 0  (erzwingt Priv-Esc fuer Machine Account)
-#   - Flag auf den Administrator-Desktop
-#   - DC als WSUS-Client: WUServer = https://wsus...:8531 (verwaist, HTTPS-fix)
-#   - Scheduled Task: alle 5 min WU-Scan (Playability)
-#
-#  Kein echter WSUS-Server: Im Angriff biegt der Spieler den DNS-Record
-#  auf seinen Host um und faehrt dort wsuks mit dem ADCS-Zert -> RCE.
+#  DC - Schritt 7: MAQ=0, Flag, WSUS-Client
 # ============================================================
 
 # ==== Konfiguration ====
 $WsusUrl   = 'https://wsus.agile-corp.hacklu:8531'
-$ScanEvery = 1   # Minuten (1 = Minimum fuer Task-Repetition)
+$ScanEvery = 1   
 $WsusGpo    = 'Windows-Update-Policy'
 # =======================
 
@@ -34,10 +26,8 @@ Set-ItemProperty -Path $au -Name 'NoAutoUpdate'   -Value 0 -Type DWord
 Set-ItemProperty -Path $au -Name 'AUOptions'      -Value 4 -Type DWord   # auto download + install
 Write-Host "[+] WUServer = $WsusUrl (HTTPS-fix)"
 
-# --- PSWindowsUpdate installieren (Build-Zeit, braucht Internet) -----
-# UsoClient StartScan ist auf 2022 unzuverlaessig. PSWindowsUpdate mit
-# Install-WindowsUpdate -AcceptAll triggert zuverlaessig Scan+Install
-# vom konfigurierten WSUS. Modul wird in den Snapshot gebacken.
+# --- PSWindowsUpdate installieren -----
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
@@ -45,9 +35,7 @@ Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers
 Write-Host "[+] PSWindowsUpdate installiert."
 
 # --- Scan-Task: erst DNS flushen, dann via WSUS installieren ---------
-# flushdns ist noetig, sonst bleibt der alte 'wsus'-Record im Resolver-
-# Cache des DC und der umgebogene Eintrag des Angreifers greift nicht.
-# Zwei Aktionen laufen sequentiell in Reihenfolge.
+
 $flush  = New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\ipconfig.exe" -Argument '/flushdns'
 $update = New-ScheduledTaskAction -Execute "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe" `
              -Argument '-NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate; Install-WindowsUpdate -AcceptAll -IgnoreReboot | Out-Null"'
