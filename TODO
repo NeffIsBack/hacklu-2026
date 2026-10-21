@@ -8,5 +8,7 @@
 
 
 ## Mit hlt Bug Fixes
-* Timezone Zeit korrekt einstellen auf DCs
+* Timezone Zeit korrekt einstellen auf DCs (Windows interprets hwclock (local time), Linux interprets hwclock (local time) as UTC)
+  * Either set america/LA timezone in docker
+  * Or set the registry key: `New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation' -Name 'RealTimeIsUniversal' -PropertyType DWord -Value 1 -Force | Out-Null`
 * IPs setzen
