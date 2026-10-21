@@ -14,23 +14,15 @@ Import-Module ActiveDirectory
 $domainDN = (Get-ADDomain).DistinguishedName
 $pw       = ConvertTo-SecureString $DefaultPassword -AsPlainText -Force
 
-# --- OU-Struktur -----------------------------------------------------
+# --- Container-Struktur unter CN=Users -------------------------------
+# CN=Users erlaubt im Standardschema Container, aber keine OUs.
 $ous = @('Management','Product','Engineering','QA','HR')
 foreach ($ou in $ous) {
-    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase $domainDN -ErrorAction SilentlyContinue)) {
-        New-ADOrganizationalUnit -Name $ou -Path "OU=Users,$domainDN" -ProtectedFromAccidentalDeletion $false -ErrorAction SilentlyContinue
+    if (-not (Get-ADObject -Filter "Name -eq '$ou' -and ObjectClass -eq 'container'" -SearchBase "CN=Users,$domainDN" -SearchScope OneLevel -ErrorAction Stop)) {
+        New-ADObject -Name $ou -Type 'container' -Path "CN=Users,$domainDN" -ProtectedFromAccidentalDeletion $false -OtherAttributes @{showInAdvancedViewOnly=$false}
     }
 }
-# Users-Root-OU anlegen falls noch nicht da
-if (-not (Get-ADOrganizationalUnit -Filter "Name -eq 'Users'" -SearchBase $domainDN -ErrorAction SilentlyContinue)) {
-    New-ADOrganizationalUnit -Name 'Users' -Path $domainDN -ProtectedFromAccidentalDeletion $false
-}
-foreach ($ou in $ous) {
-    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase "OU=Users,$domainDN" -ErrorAction SilentlyContinue)) {
-        New-ADOrganizationalUnit -Name $ou -Path "OU=Users,$domainDN" -ProtectedFromAccidentalDeletion $false
-    }
-}
-Write-Host "[+] OU-Struktur: Users/{$($ous -join ',')}"
+Write-Host "[+] Container-Struktur: CN=Users/{$($ous -join ',')}"
 
 # --- Mitarbeiterliste ------------------------------------------------
 # Format: Sam, Vorname, Nachname, Titel, OU, Beschreibung
@@ -102,7 +94,7 @@ $users = @(
 # --- Benutzer anlegen ------------------------------------------------
 $created = 0; $skipped = 0
 foreach ($u in $users) {
-    $ouPath = "OU=$($u.OU),OU=Users,$domainDN"
+    $ouPath = "CN=$($u.OU),CN=Users,$domainDN"
     $upn    = "$($u.Sam)@$Domain"
 
     if (Get-ADUser -Filter "SamAccountName -eq '$($u.Sam)'" -ErrorAction SilentlyContinue) {
