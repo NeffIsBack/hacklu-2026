@@ -47,3 +47,5 @@ Devon Opsworth | DevOps Engineer | Agile Corp
 
 Set-Content -Path (Join-Path $desktop 'RE- WSUS migration status.eml') -Value $eml -Encoding UTF8
 Write-Host "[+] Admin-Mail -> $desktop\RE- WSUS migration status.eml"
+
+gpupdate /force
