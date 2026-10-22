@@ -1,5 +1,12 @@
 # ============================================================
 #  DC - Schritt 8: Unternehmensstruktur + 25 Mitarbeiter
+#
+#  Legt eine realistische OU-Struktur fuer Agile Corp an und
+#  bevoelkert sie mit 25 Domain Users ohne Sonderrechte.
+#  Alle Namen sind Agile-Methodik-Witze (subtle bis offensichtlich).
+#
+#  Passwort fuer alle: 1!k4jas123oiajh
+#  (schwach, realistisch fuer eine Firma mit Technical Debt)
 # ============================================================
 
 # ==== Konfiguration ====
@@ -14,18 +21,23 @@ Import-Module ActiveDirectory
 $domainDN = (Get-ADDomain).DistinguishedName
 $pw       = ConvertTo-SecureString $DefaultPassword -AsPlainText -Force
 
-# --- Container-Struktur unter CN=Users -------------------------------
-# CN=Users erlaubt im Standardschema Container, aber keine OUs.
+# --- OU-Struktur -----------------------------------------------------
+# Department-OUs direkt unter der Domain-Root (kein OU=Users dazwischen,
+# CN=Users ist ein eingebauter Container und blockiert den Namen).
 $ous = @('Management','Product','Engineering','QA','HR')
 foreach ($ou in $ous) {
-    if (-not (Get-ADObject -Filter "Name -eq '$ou' -and ObjectClass -eq 'container'" -SearchBase "CN=Users,$domainDN" -SearchScope OneLevel -ErrorAction Stop)) {
-        New-ADObject -Name $ou -Type 'container' -Path "CN=Users,$domainDN" -ProtectedFromAccidentalDeletion $false -OtherAttributes @{showInAdvancedViewOnly=$false}
+    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase $domainDN -SearchScope OneLevel -ErrorAction SilentlyContinue)) {
+        New-ADOrganizationalUnit -Name $ou -Path $domainDN -ProtectedFromAccidentalDeletion $false
+        Write-Host "[+] OU '$ou' angelegt."
+    } else {
+        Write-Host "[=] OU '$ou' existiert bereits."
     }
 }
-Write-Host "[+] Container-Struktur: CN=Users/{$($ous -join ',')}"
+Write-Host "[+] OU-Struktur: $($ous -join ', ') (direkt unter Domain-Root)"
 
 # --- Mitarbeiterliste ------------------------------------------------
 # Format: Sam, Vorname, Nachname, Titel, OU, Beschreibung
+# Witz steckt im Namen oder Titel - Spieler sollen beim Enumerieren grinsen.
 
 $users = @(
     # === Management ===
@@ -94,7 +106,7 @@ $users = @(
 # --- Benutzer anlegen ------------------------------------------------
 $created = 0; $skipped = 0
 foreach ($u in $users) {
-    $ouPath = "CN=$($u.OU),CN=Users,$domainDN"
+    $ouPath = "OU=$($u.OU),$domainDN"
     $upn    = "$($u.Sam)@$Domain"
 
     if (Get-ADUser -Filter "SamAccountName -eq '$($u.Sam)'" -ErrorAction SilentlyContinue) {
@@ -121,3 +133,5 @@ foreach ($u in $users) {
 }
 
 Write-Host "[+] $created Benutzer angelegt, $skipped bereits vorhanden."
+Write-Host "[i] Alle Benutzer: Passwort '$DefaultPassword', keine Sonderrechte."
+Write-Host "    Enumerierung z.B.: ldapdomaindump / bloodhound / net user /domain"
