@@ -7,10 +7,10 @@
 
 # ===================== KONFIG =====================
 $HostName       = 'DC-OLD'
-$IPAddress      = '192.168.109.20'
+$IPAddress      = '10.244.0.20'
 $PrefixLength   = 24
-$DefaultGateway = '192.168.109.2'      # '' = kein Gateway (isoliertes Lab)
-$DnsServers     = @('192.168.109.10')  # ZEIGT AUF DEN PARENT-DC (DC-NEW)!
+$DefaultGateway = '10.244.0.2'      # '' = kein Gateway (isoliertes Lab)
+$DnsServers     = @('10.244.0.10')  # ZEIGT AUF DEN PARENT-DC (DC-NEW)!
 $InterfaceAlias = ''                  # '' = Auto-Erkennung des aktiven Adapters
 $AutoRestart    = $true
 # ==================================================
