@@ -8,9 +8,9 @@ $Domain    = 'old.velocity.hacklu'
 $UsersPath = 'CN=Users,DC=old,DC=velocity,DC=hacklu'
 
 # BEWUSST SCHWACH - muss in einer Wordlist crackbar sein:
-$SvcGranitePassword = 'granitecowboy9'
-
-$UserPassword       = 'Str0ng-LAb-P@Ss-2026!'
+$SvcGranitePassword = 'Granite00'
+# Normale Mitarbeiter - darf stark sein:
+$UserPassword       = 'Str0ng-Lab-P@ss-2026!'
 
 $Employees = @(
     @{ Sam='m.becker';   Name='Marie Becker' }

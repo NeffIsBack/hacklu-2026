@@ -1,5 +1,12 @@
 # ============================================================
 #  DC - Schritt 8: Unternehmensstruktur + 25 Mitarbeiter
+#
+#  Legt eine realistische OU-Struktur fuer Agile Corp an und
+#  bevoelkert sie mit 25 Domain Users ohne Sonderrechte.
+#  Alle Namen sind Agile-Methodik-Witze (subtle bis offensichtlich).
+#
+#  Passwort fuer alle: 1!k4jas123oiajh
+#  (schwach, realistisch fuer eine Firma mit Technical Debt)
 # ============================================================
 
 # ==== Configuration ====
@@ -15,25 +22,22 @@ $domainDN = (Get-ADDomain).DistinguishedName
 $pw       = ConvertTo-SecureString $DefaultPassword -AsPlainText -Force
 
 # --- OU-Struktur -----------------------------------------------------
+# Department-OUs direkt unter der Domain-Root (kein OU=Users dazwischen,
+# CN=Users ist ein eingebauter Container und blockiert den Namen).
 $ous = @('Management','Product','Engineering','QA','HR')
 foreach ($ou in $ous) {
-    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase $domainDN -ErrorAction SilentlyContinue)) {
-        New-ADOrganizationalUnit -Name $ou -Path "OU=Users,$domainDN" -ProtectedFromAccidentalDeletion $false -ErrorAction SilentlyContinue
+    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase $domainDN -SearchScope OneLevel -ErrorAction SilentlyContinue)) {
+        New-ADOrganizationalUnit -Name $ou -Path $domainDN -ProtectedFromAccidentalDeletion $false
+        Write-Host "[+] OU '$ou' angelegt."
+    } else {
+        Write-Host "[=] OU '$ou' existiert bereits."
     }
 }
-# Users-Root-OU anlegen falls noch nicht da
-if (-not (Get-ADOrganizationalUnit -Filter "Name -eq 'Users'" -SearchBase $domainDN -ErrorAction SilentlyContinue)) {
-    New-ADOrganizationalUnit -Name 'Users' -Path $domainDN -ProtectedFromAccidentalDeletion $false
-}
-foreach ($ou in $ous) {
-    if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$ou'" -SearchBase "OU=Users,$domainDN" -ErrorAction SilentlyContinue)) {
-        New-ADOrganizationalUnit -Name $ou -Path "OU=Users,$domainDN" -ProtectedFromAccidentalDeletion $false
-    }
-}
-Write-Host "[+] OU-Struktur: Users/{$($ous -join ',')}"
+Write-Host "[+] OU-Struktur: $($ous -join ', ') (direkt unter Domain-Root)"
 
 # --- Mitarbeiterliste ------------------------------------------------
 # Format: Sam, Vorname, Nachname, Titel, OU, Beschreibung
+# Witz steckt im Namen oder Titel - Spieler sollen beim Enumerieren grinsen.
 
 $users = @(
     # === Management ===
@@ -102,7 +106,7 @@ $users = @(
 # --- Benutzer anlegen ------------------------------------------------
 $created = 0; $skipped = 0
 foreach ($u in $users) {
-    $ouPath = "OU=$($u.OU),OU=Users,$domainDN"
+    $ouPath = "OU=$($u.OU),$domainDN"
     $upn    = "$($u.Sam)@$Domain"
 
     if (Get-ADUser -Filter "SamAccountName -eq '$($u.Sam)'" -ErrorAction SilentlyContinue) {
@@ -128,4 +132,6 @@ foreach ($u in $users) {
     $created++
 }
 
-Write-Host "[+] $created Benutzer angelegt."
+Write-Host "[+] $created Benutzer angelegt, $skipped bereits vorhanden."
+Write-Host "[i] Alle Benutzer: Passwort '$DefaultPassword', keine Sonderrechte."
+Write-Host "    Enumerierung z.B.: ldapdomaindump / bloodhound / net user /domain"

