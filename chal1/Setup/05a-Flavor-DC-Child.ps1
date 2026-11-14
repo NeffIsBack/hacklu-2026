@@ -1,13 +1,8 @@
 <#
-    Phase 5a: FLAVOR fuer old.velocity.hacklu (Granite - aufgekaufte Firma).
-    Auf DC-OLD als OLD\Administrator ausfuehren. Idempotent, additiv.
-
-    TONALITAET: Granite ist die alte Firma -> Beschreibungen bewusst knapp,
-    konservativ, buerokratisch (wie aus einem Aktenordner). Hints in ENGLISCH.
-    Ruehrt svc_granite_sync, svc_test und die Angriffskette NICHT an.
+    Phase 5a: FLAVOR fuer old.velocity.hacklu
 #>
 
-# ===================== KONFIG =====================
+# ===================== CONFIG =====================
 $Domain  = 'old.velocity.hacklu'
 $Base    = 'DC=old,DC=velocity,DC=hacklu'
 $OUName  = 'Granite Staff'
@@ -24,8 +19,6 @@ if (-not (Get-ADOrganizationalUnit -Server $Domain -Filter "Name -eq '$OUName'" 
 }
 $OU = "OU=$OUName,$Base"
 
-# Granite: trockene, aktenhafte Beschreibungen. Die drei Hint-Zeilen (d.koch,
-# o.fuchs, w.brandt) bleiben sachlich und unaufgeregt.
 $users = @(
   @{Sam='w.brandt';  G='Werner';   S='Brandt';  T='Managing Director';     D='Management';  En=$true;  Desc='Managing Director. Employed since 1987. Signing authority per bylaws.'}
   @{Sam='i.falk';    G='Ingrid';   S='Falk';    T='Head of Finance';       D='Finance';     En=$true;  Desc='Head of Finance. Responsible for general ledger and annual accounts.'}

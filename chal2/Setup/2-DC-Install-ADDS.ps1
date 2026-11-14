@@ -2,7 +2,7 @@
 #  DC - Schritt 2: AD DS + Forest-Promotion
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $DomainFqdn    = 'agile-corp.hacklu'
 $DomainNetbios = 'AGILE-CORP'
 $DsrmPassword  = 'c3PXFKV6x44FsM4p'

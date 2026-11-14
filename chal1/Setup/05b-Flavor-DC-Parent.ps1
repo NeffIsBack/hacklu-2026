@@ -1,12 +1,5 @@
 <#
-    Phase 5b: FLAVOR fuer velocity.hacklu (Velocity - Mutterkonzern).
-    Auf DC-NEW als VELOCITY\Administrator ausfuehren. Idempotent, additiv.
-
-    TONALITAET: Velocity ist die "agile" neue Firma -> Beschreibungen komplett
-    over-the-top LinkedIn-Buzzword-Parodie (ironischer Kontrast zu Granite).
-    Hints in ENGLISCH. Die drei funktionalen Hint-Zeilen (a.krause, n.schuster,
-    j.kaiser) bleiben zwischen dem Buzzword-Nebel gerade noch erkennbar sachlich.
-    Ruehrt gMSA/Share/Angriffskette NICHT an.
+    Phase 5b: FLAVOR fuer velocity.hacklu
 #>
 
 # ===================== KONFIG =====================
@@ -26,7 +19,7 @@ if (-not (Get-ADOrganizationalUnit -Server $Domain -Filter "Name -eq '$OUName'" 
 }
 $OU = "OU=$OUName,$Base"
 
-# Velocity: maximaler Buzzword-Overkill. Titel absichtlich lacherhaft "agile".
+# Velocity: "agile".
 $users = @(
   @{Sam='c.vogt';      G='Claudia';  S='Vogt';      T='Chief Visionary Officer';        D='Leadership';     En=$true; Desc='Serial unicorn-whisperer disrupting legacy paradigms at scale. Eats roadmaps for breakfast. #founder-energy'}
   @{Sam='m.thiel';     G='Markus';   S='Thiel';     T='Chief Trust Evangelist';         D='Security';       En=$true; Desc='Zero-trust thought-leader weaponizing synergy to 10x our security posture. Breach-proof mindset, growth-hacking the threat landscape.'}

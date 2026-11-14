@@ -1,16 +1,5 @@
 <#
-    Phase 8b (OPTIONAL): Kerberos-only fuer den PARENT (velocity.hacklu).
-    NUR auf DC-NEW ausfuehren.
-
-    !!! NIEMALS auf dem Child (DC-OLD) ausfuehren !!!
-    Anonyme Authentifizierung braucht NTLM - Kerberos kann das nicht. Auf dem
-    Child wuerde das den anonymen RID-Foothold zerstoeren.
-
-    WIRKUNG AUF DIE KETTE (Parent): erhoeht die Schwierigkeit.
-      - gMSA-Read muss ueber Kerberos laufen (Tools mit -k).
-      - Backup$-Zugriff als gMSA per OVERPASS-the-Hash (AES-Key aus dem
-        Managed-Password -> TGT -> Kerberos-SMB), nicht per PtH.
-
+    Phase 7: Kerberos-only fuer den PARENT
 #>
 
 $ErrorActionPreference = 'Stop'

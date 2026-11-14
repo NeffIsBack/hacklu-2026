@@ -1,31 +1,12 @@
 <#
-    Phase 6: Passwort-Rotation in old.velocity.hacklu (Story: "alle Passwoerter
-    rotiert, nur krbtgt noch gueltig").
-    Auf DC-OLD als OLD\Administrator ausfuehren. Idempotent (random reset).
-
-    MACHT DIE LIVE-HASHES ANDERS ALS DIE IN DER EXPORTIERTEN ntds.dit, damit aus
-    dem Export nur noch der krbtgt-Hash nutzbar ist.
-
-    >>> VORAUSSETZUNG <<<
-    - Die ntds.dit in Backup$\Export existiert BEREITS (vor der Rotation).
-    - Nach dieser Rotation den Export NICHT neu ziehen (sonst Twist kaputt).
-    - Snapshot der VM VORHER empfohlen.
-
-    HART AUSGESCHLOSSEN (werden NIE rotiert):
-      krbtgt            -> Export-krbtgt muss == Live bleiben (Golden Ticket)
-      svc_test          -> Foothold-Passwort (= Username) muss bleiben
-      svc_granite_sync  -> Kerberoast-Crack (Granite2021) muss bleiben
-      svc_backup_gmsa   -> gMSA (managed), nie anfassen
-      Guest             -> deaktiviert, egal
+    Phase 6: Passwort-Rotation in old.velocity.hacklu
 #>
 
-# ===================== KONFIG =====================
+# ===================== CONFIG =====================
 $Domain              = 'old.velocity.hacklu'
 
-# Administrator wird rotiert (schliesst den PtH-Shortcut aus dem Export),
-# bekommt aber ein BEKANNTES neues Passwort, damit du weiter Zugriff hast.
 $RotateAdministrator = $true
-$NewAdminPassword    = 'KPLewbdd5piHs3YD'   # <-- ab jetzt das Live-Admin-PW!
+$NewAdminPassword    = 'KPLewbdd5piHs3YD'
 
 $Protect = @('krbtgt','svc_test','svc_granite_sync','svc_backup_gmsa','Guest')
 # ==================================================
@@ -45,10 +26,6 @@ function New-RandomPw { ([guid]::NewGuid().ToString('N') + 'Aa1!') }
  
 foreach ($u in (Get-ADUser -Server $Domain -Filter * )) {
     $sam = $u.SamAccountName
- 
-    # Trust-/Maschinenkonten (enden auf '$') NIE anfassen. z.B. VELOCITY$ ist
-    # das Interdomain-Trust-Konto zum Parent - ein Reset wuerde den Trust und
-    # damit den SID-History-Angriff zerstoeren.
     if ($sam -like '*$') { $skipped += $sam; continue }
  
     if ($sam -eq 'Administrator') {

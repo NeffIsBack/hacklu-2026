@@ -2,11 +2,11 @@
 #  DC - Schritt 1: Netzwerk & Rechnername
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $Name    = 'DC'
-$IP      = '192.168.109.10'
+$IP      = '10.244.0.10'
 $Prefix  = 24
-$Gateway = '192.168.109.2'
+$Gateway = '10.244.1.2'
 # =======================
 
 $ErrorActionPreference = 'Stop'

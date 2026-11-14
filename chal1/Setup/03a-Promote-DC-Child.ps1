@@ -1,26 +1,17 @@
 <#
     Phase 3a: DC-OLD als Child-Domain 'old.velocity.hacklu' promoten.
-    Ohne Parameter - Werte im KONFIG-Block anpassen und Skript einfach ausfuehren.
-    Voraussetzung:
-      - Phase 1 (01-BaseConfig-DC-OLD) gelaufen: IP .11, Rename DC-OLD,
-        DNS -> Parent-DC (.10), Reboot.
-      - Parent-DC (DC-NEW) laeuft und ist erreichbar.
-    ACHTUNG: rebootet am Ende automatisch. Danach 03b ausfuehren.
-
-    DomainMode WinThreshold (2016) = gleich dem Forest-Level. Passt fuer 2019/2022/2025.
 #>
 
-# ===================== KONFIG =====================
-$NewDomainName       = 'old'                 # -> old.velocity.hacklu
+# ===================== CONFIG =====================
+$NewDomainName       = 'old'
 $ParentDomain        = 'velocity.hacklu'
 $NewNetbios          = 'OLD'
 $ParentNetbios       = 'VELOCITY'
-$ParentDcIp          = '192.168.109.10'
+$ParentDcIp          = '10.244.0.10'
 
-# LAB-ONLY, hartkodiert:
 $LocalAdminPassword  = 'qcSiecDUATD63Kxm'
 $DsrmPassword        = 'qcSiecDUATD63Kxm'
-$ParentAdminPassword = 'C8J33i45kt4HXHMQ'   # = Domain-Admin des Parent (aus 02a)!
+$ParentAdminPassword = 'C8J33i45kt4HXHMQ'
 # ==================================================
 
 $ErrorActionPreference = 'Stop'
@@ -48,13 +39,11 @@ Set-LocalUser -Name "Administrator" `
 Write-Host "[*] Installiere AD-DS-Rolle ..." -ForegroundColor Cyan
 Install-WindowsFeature AD-Domain-Services -IncludeManagementTools | Out-Null
 
-# UPN-Format (Administrator@velocity.hacklu) - NetBIOS-Format scheitert hier
-# an "supply a DNS resolvable domain name".
 $eaCred = New-Object System.Management.Automation.PSCredential(
     "Administrator@$ParentDomain",
     (ConvertTo-SecureString $ParentAdminPassword -AsPlainText -Force))
 
-Write-Host "[*] Erstelle Child-Domain '$NewDomainName.$ParentDomain' - reboot folgt automatisch." -ForegroundColor Yellow
+Write-Host "[*] Erstelle Child-Domain '$NewDomainName.$ParentDomain'" -ForegroundColor Yellow
 Install-ADDSDomain `
     -NewDomainName                  $NewDomainName `
     -ParentDomainName               $ParentDomain `

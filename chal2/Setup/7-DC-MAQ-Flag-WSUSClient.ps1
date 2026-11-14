@@ -2,7 +2,7 @@
 #  DC - Schritt 7: MAQ=0, Flag, WSUS-Client
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $WsusUrl   = 'https://wsus.agile-corp.hacklu:8531'
 $ScanEvery = 1   
 $WsusGpo    = 'Windows-Update-Policy'
@@ -48,9 +48,6 @@ Register-ScheduledTask -TaskName 'WSUS-FastScan' -Action $flush,$update -Trigger
 Write-Host "[+] Scan-Task 'WSUS-FastScan' alle $ScanEvery min (flushdns + Install-WindowsUpdate)."
 
 # --- GPO fuer WSUS-Client (schreibt registry.pol nach SYSVOL) --------
-# wsuks --discover liest SYSVOL-GPOs und findet WUServer darin.
-# Damit ist der WSUS-Endpunkt fuer den Angreifer nach dem initialen
-# Access (svc_deploy-Creds) sauber auffindbar ohne Ratespiel.
 if (-not (Get-GPO -Name $WsusGpo -ErrorAction SilentlyContinue)) {
     New-GPO -Name $WsusGpo -Comment 'Corporate Windows Update configuration' | Out-Null
     Write-Host "[+] GPO '$WsusGpo' angelegt."
@@ -64,7 +61,7 @@ Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'UseWUServer'    -Type
 Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'NoAutoUpdate'   -Type DWord  -Value 0        | Out-Null
 Set-GPRegistryValue -Name $WsusGpo -Key $auKey -ValueName 'AUOptions'      -Type DWord  -Value 4        | Out-Null
  
-# GPO an Domain-Root verknuepfen (alle Computer, inkl. DC, bekommen sie)
+# GPO an Domain-Root verknuepfen
 $domainDN = (Get-ADDomain).DistinguishedName
 try { New-GPLink -Name $WsusGpo -Target $domainDN -LinkEnabled Yes -ErrorAction Stop | Out-Null
       Write-Host "[+] GPO '$WsusGpo' an Domain-Root verknuepft." }

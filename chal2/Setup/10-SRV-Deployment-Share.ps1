@@ -2,7 +2,7 @@
 #  SRV - Schritt 3: Deployment-Share (Guest-lesbar)
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $ShareName = 'REMINST'
 $SharePath = 'C:\RemoteInstall'
 $User      = 'svc_deploy'
@@ -59,7 +59,7 @@ Write-Host "[+] ImageUnattend.xml geschrieben (Passwort base64, WSUS-Hinweis ent
 try { Enable-LocalUser -Name 'Guest'; Write-Host "[+] Guest-Konto aktiviert." }
 catch { Write-Host "[!] Guest nicht aktivierbar: $($_.Exception.Message)" }
 
-# --- NTFS: Everyone + Guest lesen (KEIN Anonymous) -------------------
+# --- NTFS: Everyone + Guest lesen -------------------
 $acl = Get-Acl $SharePath
 foreach ($who in @('Everyone','Guest')) {
     $acl.AddAccessRule( (New-Object System.Security.AccessControl.FileSystemAccessRule(

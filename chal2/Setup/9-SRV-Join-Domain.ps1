@@ -2,7 +2,7 @@
 #  SRV - Schritt 2: Domain-Join
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $DomainFqdn = 'agile-corp.hacklu'
 $JoinUser   = 'AGILE-CORP\Administrator'
 $JoinPass   = 'c3PXFKV6x44FsM4p'     # Passwort des Domain-Administrators

@@ -2,7 +2,7 @@
 #  DC - Schritt 6: Deploy-User + OU + verwundbare GPO
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $UserSam     = 'svc_deploy'
 $UserDisplay = 'WDS Deployment Service'
 $UserUpn     = 'svc_deploy@agile-corp.hacklu'
@@ -43,7 +43,7 @@ try { New-GPLink -Name $GpoName -Target $ouDN -LinkEnabled Yes -ErrorAction Stop
       Write-Host "[+] GPO an '$ouDN' verknuepft." }
 catch { Write-Host "[=] GPO-Link vermutlich bereits vorhanden." }
 
-# --- 4) GP-Refresh 5 min (Playability) -------------------------------
+# --- 4) GP-Refresh 5 min -------------------------------
 $sysKey = 'HKLM\Software\Policies\Microsoft\Windows\System'
 Set-GPRegistryValue -Name $GpoName -Key $sysKey -ValueName 'GroupPolicyRefreshTime'       -Type DWord -Value $RefreshMin | Out-Null
 Set-GPRegistryValue -Name $GpoName -Key $sysKey -ValueName 'GroupPolicyRefreshTimeOffset' -Type DWord -Value 0          | Out-Null

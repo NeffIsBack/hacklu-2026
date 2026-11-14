@@ -1,16 +1,8 @@
 <#
     Phase 2b: Parent-Objekte auf DC-NEW anlegen (nach Promotion + Reboot).
-    Ohne Parameter - Werte im KONFIG-Block anpassen und Skript einfach ausfuehren.
-    Als Domain Admin auf DC-NEW ausfuehren. Idempotent.
-
-    FINALE ARCHITEKTUR:
-      - Kerberoastbarer Account + Gruppe leben im CHILD (siehe 03b).
-      - Hier im PARENT nur: KDS Root Key (forest-weit) + gMSA (noch OHNE
-        Leseberechtigte) + SMB-Share Backup$.
-      - Die Verknuepfung "Child-Gruppe darf gMSA-Passwort lesen" setzt 03c.
 #>
 
-# ===================== KONFIG =====================
+# ===================== CONFIG =====================
 $NetBIOS   = 'VELOCITY'
 $Domain    = 'velocity.hacklu'
 $ShareRoot = 'C:\Shares\Backup'
@@ -19,7 +11,7 @@ $ShareRoot = 'C:\Shares\Backup'
 $ErrorActionPreference = 'Stop'
 Import-Module ActiveDirectory
 
-# --- 1) KDS Root Key (forest-weit, nur einmal noetig; rueckdatiert => sofort nutzbar) ---
+# --- 1) KDS Root Key ---
 if (-not (Get-KdsRootKey -ErrorAction SilentlyContinue)) {
     Write-Host "[*] Lege KDS Root Key an (rueckdatiert) ..." -ForegroundColor Cyan
     Add-KdsRootKey -EffectiveTime ((Get-Date).AddHours(-10)) | Out-Null
@@ -27,7 +19,7 @@ if (-not (Get-KdsRootKey -ErrorAction SilentlyContinue)) {
     Write-Host "[*] KDS Root Key existiert bereits." -ForegroundColor DarkGray
 }
 
-# --- 2) gMSA im Parent (Leseberechtigte werden erst in 03c gesetzt) ---
+# --- 2) gMSA im Parent ---
 if (-not (Get-ADServiceAccount -Filter "SamAccountName -eq 'svc_backup_gmsa$'" -ErrorAction SilentlyContinue)) {
     Write-Host "[*] Erstelle gMSA svc_backup_gmsa (noch ohne Leseberechtigte) ..." -ForegroundColor Cyan
     New-ADServiceAccount -Name "svc_backup_gmsa" `
@@ -38,7 +30,7 @@ if (-not (Get-ADServiceAccount -Filter "SamAccountName -eq 'svc_backup_gmsa$'" -
     Write-Host "[*] svc_backup_gmsa existiert bereits." -ForegroundColor DarkGray
 }
 
-# --- 3) Backup$-Share (Ordner + NTFS-ACL + SMB-Freigabe) ---
+# --- 3) Backup$-Share ---
 if (-not (Test-Path $ShareRoot)) {
     New-Item -ItemType Directory -Path $ShareRoot -Force | Out-Null
     New-Item -ItemType Directory -Path (Join-Path $ShareRoot 'Export') -Force | Out-Null
@@ -67,5 +59,3 @@ if (-not (Get-SmbShare -Name 'Backup$' -ErrorAction SilentlyContinue)) {
 } else {
     Write-Host "[*] SMB-Share 'Backup\$' existiert bereits." -ForegroundColor DarkGray
 }
-
-Write-Host "`n[fertig] In \Export gehoert spaeter die veraltete NTDS.dit der alten Domain." -ForegroundColor Yellow

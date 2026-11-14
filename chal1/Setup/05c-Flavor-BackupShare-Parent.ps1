@@ -1,12 +1,8 @@
 <#
-    Phase 5c: FLAVOR fuer den Backup-Share (Backup$) auf DC-NEW.
-    Als VELOCITY\Administrator ausfuehren. Idempotent, additiv.
-    Decoy-Dateien rund um Export\ + Postfach-Export (.eml). Inhalte ENGLISCH.
-    Ton-Kontrast: Granite-Absender trocken, Velocity-Absender over-the-top.
-    Ruehrt vorhandene ntds.dit/SYSTEM in Export\ NICHT an.
+    Phase 5c: FLAVOR fuer den Backup-Share (Backup$) auf DC-NEW
 #>
 
-# ===================== KONFIG =====================
+# ===================== CONFIG =====================
 $Root = 'C:\Shares\Backup'
 # ==================================================
 
@@ -52,6 +48,7 @@ Created : 2026-02-02 by a.krause
 
 Files:
   ntds.dit   Directory database of the Granite domain
+  SYSTEM
 
 NOTE (internal): After cutover, ALL Granite user passwords were force-reset.
 This offline copy is therefore useless for authentication - structure backup

@@ -2,7 +2,7 @@
 #  DC - Schritt 5: Verwundbares Zertifikat-Template
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $Template = 'WebServer'
 # =======================
 

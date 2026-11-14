@@ -2,7 +2,7 @@
 #  DC - Schritt 3: DNS-Misconfig + wsus-Record
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $DomainFqdn = 'agile-corp.hacklu'
 $WsusLabel  = 'wsus'
 $WsusTarget = '172.16.10.10'    # verwaist 

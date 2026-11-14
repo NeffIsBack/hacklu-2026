@@ -2,7 +2,7 @@
 #  DC - Schritt 8: Unternehmensstruktur + 25 Mitarbeiter
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $DefaultPassword = '1!k4jas123oiajh'
 $Domain          = 'agile-corp.hacklu'
 $DomainNetbios   = 'AGILE-CORP'
@@ -128,4 +128,4 @@ foreach ($u in $users) {
     $created++
 }
 
-Write-Host "[+] $created Benutzer angelegt, $skipped bereits vorhanden."
+Write-Host "[+] $created Benutzer angelegt."

@@ -2,12 +2,12 @@
 #  SRV - Schritt 1: Netzwerk & Rechnername
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $Name      = 'SRV'
-$IP        = '192.168.109.20'
+$IP        = '10.244.0..20'
 $Prefix    = 24
-$Gateway   = '192.168.109.2'
-$DnsServer = '192.168.109.10'    # DC
+$Gateway   = '10.244.1.2'
+$DnsServer = '10.244.0.10'    # DC
 # =======================
 
 $ErrorActionPreference = 'Stop'

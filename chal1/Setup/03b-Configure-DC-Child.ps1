@@ -1,25 +1,16 @@
 <#
-    Phase 3b: "Legitime" Child-Objekte in old.velocity.hacklu anlegen.
-    Auf DC-OLD ausfuehren, angemeldet als OLD\Administrator
-    (Passwort = LocalAdminPassword aus 03a). Idempotent.
+    Phase 3b: Child-Objekte in old.velocity.hacklu anlegen.
 
-    Enthaelt:
-      - Universal-Gruppe ServiceAccounts (SID landet forest-weit im Token)
-      - kerberoastbaren svc_granite_sync (mit SPN, BEWUSST crackbarem Passwort)
-      - ein paar Mitarbeiter-User als Population fuer die RID-Enumeration
-    KDS Root Key wird NICHT erneut angelegt - der ist forest-weit (siehe 02b).
-    Die eigentlichen Foothold-Schwaechungen (anonyme Enumeration,
-    username=password) kommen spaeter in der Vulnerability-Phase.
 #>
 
-# ===================== KONFIG =====================
+# ===================== CONFIG =====================
 $Domain    = 'old.velocity.hacklu'
 $UsersPath = 'CN=Users,DC=old,DC=velocity,DC=hacklu'
 
 # BEWUSST SCHWACH - muss in einer Wordlist crackbar sein:
 $SvcGranitePassword = 'granitecowboy9'
-# Normale Mitarbeiter - darf stark sein:
-$UserPassword       = 'Str0ng-Lab-P@ss-2026!'
+
+$UserPassword       = 'Str0ng-LAb-P@Ss-2026!'
 
 $Employees = @(
     @{ Sam='m.becker';   Name='Marie Becker' }
@@ -68,4 +59,3 @@ foreach ($e in $Employees) {
         Write-Host "[*] User angelegt: $($e.Sam)" -ForegroundColor Green
     }
 }
-Write-Host "`n[fertig] Child-Objekte stehen. Weiter mit 03c auf DC-NEW." -ForegroundColor Yellow

@@ -2,7 +2,7 @@
 #  DC - Schritt 4: ADCS Enterprise Root CA
 # ============================================================
 
-# ==== Konfiguration ====
+# ==== Configuration ====
 $CaCommonName = 'agile-corp-Root-CA'
 # =======================
 
